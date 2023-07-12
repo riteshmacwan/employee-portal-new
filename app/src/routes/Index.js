@@ -10,7 +10,6 @@ const Signup = React.lazy(() => import('../views/Signup'));
 const NotFound = React.lazy(() => import('../views/NotFound'));
 
 export default function Index() {
-  const role = localStorage.getItem('role');
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <Router>
@@ -21,18 +20,15 @@ export default function Index() {
           <Route path="*" Component={NotFound} />
 
           {/* Company protected routes */}
-          {role === 'company' ? (
-            <Route path="/" Component={ProtectedCompanyRoute}>
-              {CompanyRoutes}
-            </Route>
-          ) : null}
+
+          <Route path="/company" Component={ProtectedCompanyRoute}>
+            {CompanyRoutes}
+          </Route>
 
           {/* Employee protected routes */}
-          {role === 'employee' ? (
-            <Route path="/" Component={ProtectedEmployeeRoute}>
-              {EmployeeRoutes}
-            </Route>
-          ) : null}
+          <Route path="/employee" Component={ProtectedEmployeeRoute}>
+            {EmployeeRoutes}
+          </Route>
         </Routes>
       </Router>
     </Suspense>

@@ -4,6 +4,6 @@ const EmployeeDashboard = React.lazy(() => import('../views/employee/Home'));
 
 export default (
   <>
-    <Route path="/dashboard" Component={EmployeeDashboard} />
+    <Route path="/employee/dashboard" Component={EmployeeDashboard} />
   </>
 );

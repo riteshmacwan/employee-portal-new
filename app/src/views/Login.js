@@ -41,7 +41,7 @@ export default function Login() {
           localStorage.setItem('token', res.data.token);
           localStorage.setItem('role', form.role);
           dispatch(setAuthRole(form.role));
-          navigate('/dashboard');
+          navigate('/' + form.role + '/dashboard');
         } else {
           alert(res.data.message);
         }
