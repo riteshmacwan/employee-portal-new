@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, SchemaTypes, Types } from 'mongoose';
+import { Document, Types } from 'mongoose';
 
 export type EmployeeDocument = Employee & Document;
 
@@ -19,6 +19,9 @@ export class Employee {
 
   @Prop({ required: false, default: false })
   isVerified: boolean;
+
+  @Prop({ required: false, default: false })
+  isDeleted: boolean;
 }
 
 export const EmployeeSchema = SchemaFactory.createForClass(Employee);

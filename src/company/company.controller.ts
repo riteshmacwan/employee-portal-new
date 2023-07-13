@@ -9,6 +9,7 @@ import {
   Res,
   UseGuards,
   Req,
+  Put,
 } from '@nestjs/common';
 import { CompanyService } from './company.service';
 import { CreateCompanyDto } from './dto/create-company.dto';
@@ -47,6 +48,13 @@ export class CompanyController {
     return await this.companyService.getRecentEmployees(res);
   }
 
+  //Api to list recent employee for a company
+  @Roles(Role.COMPANY)
+  @Get('dashboard')
+  async getDashboardData(@Res() res: Response) {
+    return await this.companyService.getDashboardData(res);
+  }
+
   //Api to get total employee for a company
   @Roles(Role.COMPANY)
   @Get('total-employees/list')
@@ -59,6 +67,20 @@ export class CompanyController {
   @Get('pending-employees/list')
   async getPendingEmployees(@Res() res: Response) {
     return await this.companyService.getPendingEmployees(res);
+  }
+
+  //Api to approve pending employee for a company
+  @Roles(Role.COMPANY)
+  @Put('approve-employee')
+  async employeesVerification(@Body() body: any, @Res() res: Response) {
+    return await this.companyService.employeesVerification(body, res);
+  }
+
+  //Api to delete employee for a company
+  @Roles(Role.COMPANY)
+  @Put('employee/delete')
+  async employeeDelete(@Body() body: any, @Res() res: Response) {
+    return await this.companyService.employeeDelete(body, res);
   }
 
   //Open api for users

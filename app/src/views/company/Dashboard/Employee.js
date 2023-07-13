@@ -6,11 +6,14 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-
+import BlockIcon from '@mui/icons-material/Block';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import DashboardLayout from '../../../layouts/company/Dashboard.layout';
 import axios from 'axios';
 import { APP_CONFIG } from '../../../config/app';
 import Button from '@mui/material/Button';
+import { formatDate } from '../../../helpers/formatDate';
 
 export default function EmployeeTable() {
   const [data, setData] = useState([]);
@@ -25,6 +28,46 @@ export default function EmployeeTable() {
         console.log(err);
       });
   }
+
+  async function handleBlock(id, type) {
+    await axios
+      .put(APP_CONFIG.BACKEND_URL + 'company/approve-employee', {
+        id: id,
+        action: type,
+      })
+      .then((res) => {
+        if (res.data.status) {
+          alert(
+            'Employee has been blocked. You can unblock them by re-verifying them.',
+          );
+          getData();
+        } else {
+          alert(res.data.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  async function handleDelete(id) {
+    await axios
+      .put(APP_CONFIG.BACKEND_URL + 'company/employee/delete', {
+        id: id,
+      })
+      .then((res) => {
+        if (res.data.status) {
+          alert('Employee has been deleted. ');
+          getData();
+        } else {
+          alert(res.data.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
   useEffect(() => {
     getData();
   }, []);
@@ -38,7 +81,7 @@ export default function EmployeeTable() {
               <TableCell>Name</TableCell>
               <TableCell>Email</TableCell>
               <TableCell>Verified</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell align="center">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -47,16 +90,35 @@ export default function EmployeeTable() {
                 key={row._id}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
-                <TableCell>{row.createdAt}</TableCell>
+                <TableCell>{formatDate(row.createdAt)}</TableCell>
                 <TableCell>{row.name}</TableCell>
                 <TableCell>{row.email}</TableCell>
                 <TableCell>{row.isVerified ? 'Yes' : 'No'}</TableCell>
                 <TableCell>
-                  <Button variant="outlined" sx={{ mr: 1 }} color="info">
-                    Edit
+                  <Button
+                    variant="outlined"
+                    sx={{ mr: 1 }}
+                    size="small"
+                    color="info"
+                  >
+                    <EditIcon />
                   </Button>
-                  <Button variant="outlined" color="error">
-                    Delete
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    sx={{ mr: 1 }}
+                    color="error"
+                    onClick={() => handleBlock(row._id, 'block')}
+                  >
+                    <BlockIcon />
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    color="error"
+                    onClick={() => handleDelete(row._id)}
+                  >
+                    <DeleteIcon />
                   </Button>
                 </TableCell>
               </TableRow>

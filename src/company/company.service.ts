@@ -30,7 +30,7 @@ export class CompanyService {
       const { name, email, password } = createCompanyDto;
 
       const isCompanyExist = await this.companyModel
-        .find({ email: email }, { _id: 1 })
+        .find({ $and: [{ email: email }, { isDeleted: false }] }, { _id: 1 })
         .lean();
 
       if (isCompanyExist.length) {
@@ -95,7 +95,13 @@ export class CompanyService {
 
     const data = await this.employeeModel
       .find(
-        { $and: [{ company_id: company_id }, { isVerified: true }] },
+        {
+          $and: [
+            { company_id: company_id },
+            { isVerified: true },
+            { isDeleted: false },
+          ],
+        },
         { password: 0, updatedAt: 0, __v: 0, company_id: 0 },
       )
       .lean();
@@ -119,7 +125,7 @@ export class CompanyService {
     const data = await this.employeeModel
       .find(
         {
-          company_id: company_id,
+          $and: [{ company_id: company_id }, { isDeleted: false }],
         },
         { password: 0, updatedAt: 0, __v: 0, company_id: 0 },
       )
@@ -139,14 +145,58 @@ export class CompanyService {
     });
   }
 
+  //Api to get dashboard data for company
+  async getDashboardData(res: any) {
+    const company_id = this.request.user._id.toString();
+    let data = {};
+    const recentEmployeeData = await this.employeeModel
+      .find(
+        {
+          $and: [{ company_id: company_id }, { isDeleted: false }],
+        },
+        { password: 0, updatedAt: 0, __v: 0, company_id: 0 },
+      )
+      .limit(5)
+      .sort({ createdAt: -1 })
+      .lean();
+    data['recentEmployeeData'] = recentEmployeeData;
+
+    const employeeBoxData = await this.employeeModel
+      .find(
+        {
+          $and: [
+            { company_id: company_id },
+            { isVerified: true },
+            { isDeleted: false },
+          ],
+        },
+        { _id: 1 },
+      )
+      .count()
+      .lean();
+
+    data['employeeBoxData'] = employeeBoxData;
+
+    return res.json({
+      status: true,
+      data: data,
+    });
+  }
+
   //Api to get total number the employees for company
   async getTotalEmployees(res: any) {
     const company_id = this.request.user._id.toString();
 
     const data = await this.employeeModel
       .find(
-        { $and: [{ company_id: company_id }, { isVerified: true }] },
-        { password: 0, updatedAt: 0, __v: 0, company_id: 0 },
+        {
+          $and: [
+            { company_id: company_id },
+            { isVerified: true },
+            { isDeleted: false },
+          ],
+        },
+        { _id: 1 },
       )
       .count()
       .lean();
@@ -169,7 +219,13 @@ export class CompanyService {
 
     const data = await this.employeeModel
       .find(
-        { $and: [{ company_id: company_id }, { isVerified: false }] },
+        {
+          $and: [
+            { company_id: company_id },
+            { isVerified: false },
+            { isDeleted: false },
+          ],
+        },
         { password: 0, updatedAt: 0, __v: 0, company_id: 0 },
       )
       .lean();
@@ -183,6 +239,53 @@ export class CompanyService {
     return res.json({
       status: true,
       data: data,
+    });
+  }
+
+  //Api to approve pending employees for company
+  async employeesVerification(body: any, res: any) {
+    const isVerified =
+      body.action === 'approve' ? true : body.action === 'block' ? false : null;
+
+    const data = await this.employeeModel
+      .findOneAndUpdate(
+        { _id: body.id },
+        { isVerified: isVerified },
+        { password: 0, updatedAt: 0, __v: 0, company_id: 0 },
+      )
+      .lean();
+
+    if (!data) {
+      return res.json({
+        status: false,
+        message: 'Data not found',
+      });
+    }
+    return res.json({
+      status: true,
+      message: 'Record updated!',
+    });
+  }
+
+  //Api to delete employees for company
+  async employeeDelete(body: any, res: any) {
+    const data = await this.employeeModel
+      .findOneAndUpdate(
+        { _id: body.id },
+        { isDeleted: true },
+        { password: 0, updatedAt: 0, __v: 0, company_id: 0 },
+      )
+      .lean();
+
+    if (!data) {
+      return res.json({
+        status: false,
+        message: 'Data not found',
+      });
+    }
+    return res.json({
+      status: true,
+      message: 'Record updated!',
     });
   }
 }
