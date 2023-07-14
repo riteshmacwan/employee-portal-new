@@ -1,14 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CreateCompanyDto } from './dto/create-company.dto';
-import { UpdateCompanyDto } from './dto/update-company.dto';
 import { Response } from 'express';
 import { InjectModel } from '@nestjs/mongoose';
 import { Company } from './entities/company.entity';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { CompanyLoginDto } from './dto/login-company.dto';
-import { Role } from 'src/auth/guards/roles';
 import { REQUEST } from '@nestjs/core';
 import {
   Employee,

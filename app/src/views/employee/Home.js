@@ -7,7 +7,7 @@ export default function Home() {
   function logout() {
     localStorage.removeItem('role');
     localStorage.removeItem('token');
-    navigate('/login');
+    navigate('/login', { replace: true });
   }
   return (
     <div>

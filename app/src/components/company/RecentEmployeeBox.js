@@ -19,7 +19,7 @@ export default function RecentEmployeeBox({ employeeData }) {
             alignItems: 'center',
           }}
         >
-          <CircularProgress />
+          No data found
         </Box>
       ) : (
         <>

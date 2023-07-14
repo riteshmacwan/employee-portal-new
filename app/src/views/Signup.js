@@ -10,10 +10,11 @@ import Container from '@mui/material/Container';
 import CopyRight from '../components/CopyRight';
 import { FormHelperText, MenuItem, Select } from '@mui/material';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { redirect } from 'react-router-dom';
 
 export default function SignUp() {
+  let navigate = useNavigate();
   const [type, setType] = useState('employee');
   const [companyList, setCompanyList] = useState([]);
   const initialCompanyForm = {
@@ -67,7 +68,7 @@ export default function SignUp() {
           getCompanyList();
           localStorage.setItem('token', res.data.token);
           localStorage.setItem('role', type);
-          redirect('/dashboard');
+          navigate('/' + type + '/dashboard', { replace: true });
         } else {
           alert(res.data.message);
         }
