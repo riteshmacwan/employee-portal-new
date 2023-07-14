@@ -73,7 +73,6 @@ export default function DashboardLayout(props) {
     localStorage.removeItem('role');
     localStorage.removeItem('token');
     navigate('/login', { replace: true });
-    // window.location.replace('/login');
   }
   const [open, setOpen] = React.useState(false);
   const toggleDrawer = () => {
@@ -109,11 +108,6 @@ export default function DashboardLayout(props) {
           >
             Employee Portal
           </Typography>
-          <IconButton color="inherit">
-            <Badge badgeContent={4} color="secondary">
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
           <IconButton color="inherit">
             <Button onClick={logout} variant="contained" color="error">
               Logout

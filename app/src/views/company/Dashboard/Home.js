@@ -36,7 +36,7 @@ export default function Dashboard() {
               height: 240,
             }}
           >
-            <Chart />
+            <Chart data={data.graphData ? data.graphData : []} />
           </Paper>
         </Grid>
         {/* Recent Deposits */}
