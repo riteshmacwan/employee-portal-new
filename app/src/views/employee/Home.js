@@ -1,11 +1,11 @@
 import React from 'react';
-import HeaderComponent from '../../layouts/employee/Header.layout';
+import AppLayout from '../../layouts/employee/App.layout';
+import Container from '@mui/material/Container';
 
 export default function Home() {
   return (
-    <>
-      <HeaderComponent />
-      Home
-    </>
+    <AppLayout>
+      <Container maxWidth="lg">This is employee</Container>
+    </AppLayout>
   );
 }

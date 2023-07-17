@@ -38,22 +38,26 @@ export default function Verification() {
       showDenyButton: true,
       confirmButtonText: 'Yes',
       denyButtonText: 'No',
-    }).then(async () => {
-      await axios
-        .put(APP_CONFIG.BACKEND_URL + 'company/approve-employee', {
-          id: id,
-          action: 'approve',
-        })
-        .then((res) => {
-          if (res.data.status) {
-            MySwal.fire('User verified successfully!').then(() => getData());
-          } else {
-            alert(res.data.message);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await axios
+          .put(APP_CONFIG.BACKEND_URL + 'company/approve-employee', {
+            id: id,
+            action: 'approve',
+          })
+          .then((res) => {
+            if (res.data.status) {
+              MySwal.fire('User verified successfully!').then(() => getData());
+            } else {
+              alert(res.data.message);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } else {
+        Swal.fire('Changes are not saved', '', 'info');
+      }
     });
   }
 

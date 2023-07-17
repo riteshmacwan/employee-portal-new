@@ -12,6 +12,7 @@ import { FormHelperText, MenuItem, Select } from '@mui/material';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { redirect } from 'react-router-dom';
+import { APP_CONFIG } from '../config/app';
 
 export default function SignUp() {
   let navigate = useNavigate();
@@ -33,7 +34,7 @@ export default function SignUp() {
 
   const getCompanyList = async () => {
     await axios
-      .get('http://127.0.0.1:8000/company/user/list')
+      .get(APP_CONFIG.BACKEND_URL + '/company/user/list')
       .then((res) => {
         setCompanyList(res.data.data);
       })
@@ -61,7 +62,7 @@ export default function SignUp() {
 
     let formData = type === 'employee' ? employeeForm : companyForm;
     await axios
-      .post('http://localhost:8000/' + type + '/signup', formData)
+      .post(APP_CONFIG.BACKEND_URL + type + '/signup', formData)
       .then((res) => {
         if (res.data.status) {
           alert('Signup Successful!');
